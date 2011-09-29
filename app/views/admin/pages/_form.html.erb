@@ -13,5 +13,8 @@
   <%= f.input :position %>
   <%= f.input :layout %>
   <%= f.input :visible %>
-  Parent Menu Item- <%= f.select :parent_id, nested_set_options(Page, @page) {|i| "#{'-' * i.level} #{i.title}" }, :include_blank => '-None-' %>
+  Parent Menu Item- 
+  <%= f.select :parent_id, nested_set_options(Page, @page) {|i, level|
+           "#{'–' * level} #{i.title}"
+         }, :include_blank => '-None-' %>
 <% end %>
