@@ -17,4 +17,5 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency('spree_core', '>= 0.60.0')
+  s.add_dependency('spree_static_content', '~> 0.60.1')
 end
