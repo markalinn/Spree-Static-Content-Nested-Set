@@ -13,8 +13,8 @@ class Page < ActiveRecord::Base
   
   #Updated this to only show the root level items in header_links
   scope :header_links, where(["show_in_header = ? and parent_id is NULL", true])
-  scope :footer_links, where(["show_in_footer = ?", true])
-  scope :sidebar_links, where(["show_in_sidebar = ?", true])
+  scope :footer_links, where(["show_in_footer = ? and parent_id is NULL", true])
+  scope :sidebar_links, where(["show_in_sidebar = ? and parent_id is NULL", true])
   scope :visible, where(:visible => true)
   
   before_save :update_positions_and_slug
