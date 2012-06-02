@@ -2,8 +2,8 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_static_content_nested_set'
   s.version     = '0.60.0'
-  s.summary     = 'Add gem summary here'
-  s.description = 'Add (optional) gem description here'
+  s.summary     = 'Adds parent/child relationship to static pages'
+  s.description = 'Adds parent/child relationship to static pages'
   s.required_ruby_version = '>= 1.8.7'
 
   s.author            = 'Mark Linn'
