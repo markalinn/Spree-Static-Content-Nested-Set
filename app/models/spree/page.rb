@@ -1,4 +1,4 @@
-class Page < ActiveRecord::Base
+class Spree::Page < ActiveRecord::Base
   #Note:  Attempted as decorator but default scope sorting messed up Page.rebuild!
   #so had to override model completely
   
@@ -6,7 +6,7 @@ class Page < ActiveRecord::Base
   acts_as_nested_set
   
   #Changed this for proper order
-  default_scope :order => "pages.position ASC"
+  default_scope :order => "spree_pages.position ASC"
 
   validates_presence_of :title
   validates_presence_of [:slug, :body], :if => :not_using_foreign_link?
@@ -21,7 +21,7 @@ class Page < ActiveRecord::Base
 
   def initialize(*args)
     super(*args)
-    last_page = Page.last
+    last_page = Spree::Page.last
     self.position = last_page ? last_page.position + 1 : 0
   end
 
@@ -33,19 +33,21 @@ private
 
   def update_positions_and_slug
     unless new_record?
-      return unless prev_position = Page.find(self.id).position
+      return unless prev_position = Spree::Page.find(self.id).position
       if prev_position > self.position
-        Page.update_all("position = position + 1", ["? <= position AND position < ?", self.position, prev_position])
+        Spree::Page.update_all("position = position + 1", ["? <= position AND position < ?", self.position, prev_position])
       elsif prev_position < self.position
-        Page.update_all("position = position - 1", ["? < position AND position <= ?", prev_position,  self.position])
+        Spree::Page.update_all("position = position - 1", ["? < position AND position <= ?", prev_position,  self.position])
       end
     end
 
-    self.slug = slug_link
-    Rails.cache.delete('page_not_exist/' + self.slug)
+    if not_using_foreign_link?
+      self.slug = slug_link
+      Rails.cache.delete('page_not_exist/' + self.slug)
+    end
     return true
   end
-  
+
   def not_using_foreign_link?
     foreign_link.blank?
   end
@@ -53,7 +55,7 @@ private
   def slug_link
     ensure_slash_prefix slug
   end
-  
+
   def ensure_slash_prefix(str)
     str.index('/') == 0 ? str : '/' + str
   end
