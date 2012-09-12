@@ -19,6 +19,8 @@ class Spree::Page < ActiveRecord::Base
   
   before_save :update_positions_and_slug
 
+  attr_accessible :show_in_footer, :foreign_link, :parent_id, :show_in_sidebar, :body, :layout, :visible, :position, :slug, :meta_keywords, :show_in_header, :meta_title, :meta_description, :title
+
   def initialize(*args)
     super(*args)
     last_page = Spree::Page.last
@@ -27,6 +29,13 @@ class Spree::Page < ActiveRecord::Base
 
   def link
     foreign_link.blank? ? slug_link : foreign_link
+  end
+
+  def self.by_slug(slug)
+    slug = StaticPage::remove_spree_mount_point(slug) unless Rails.application.routes.url_helpers.spree_path == "/"
+    pages = self.arel_table
+    query = pages[:slug].eq(slug).or(pages[:slug].eq("/#{slug}"))
+    self.where(query)
   end
 
 private
